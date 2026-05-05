@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Cleaning Calculator v3</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=clash-display@500,600,700&display=swap" rel="stylesheet" />
+  <style>
+    :root,[data-theme="light"]{--bg:#f7f6f2;--surface:#fcfbf8;--surface2:#f1eee8;--border:#d8d2ca;--text:#211f1b;--muted:#6f6b64;--primary:#01696f;--primary2:#0d8b93;--soft:#dcefee;--accent:#f3b33f;--danger:#b53f61;--radius:24px;--radius2:18px;--shadow:0 20px 50px rgba(24,23,19,.08);--font-display:'Clash Display',sans-serif;--font-body:'Satoshi',sans-serif}
+    [data-theme="dark"]{--bg:#171614;--surface:#1c1a17;--surface2:#26231f;--border:#39352f;--text:#efe9df;--muted:#a69f95;--primary:#5caab4;--primary2:#86d0d7;--soft:#223639;--accent:#f3c665;--danger:#df7091;--shadow:0 20px 50px rgba(0,0,0,.25)}
+    *{box-sizing:border-box} body{margin:0;font-family:var(--font-body);background:radial-gradient(circle at top left, rgba(1,105,111,.10), transparent 35%),var(--bg);color:var(--text)} button,input,textarea{font:inherit}
+    .app{max-width:1320px;margin:0 auto;padding:24px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+    .brand{display:flex;gap:14px;align-items:center}.logo{width:180px;max-width:46vw;background:transparent;display:flex;align-items:center;justify-content:center}.logo img{width:100%;height:auto;display:block;object-fit:contain}
+    h1,h2,h3{font-family:var(--font-display);letter-spacing:-.03em;margin:0}.sub{color:var(--muted);margin-top:4px}
+    .theme{width:48px;height:48px;border-radius:16px;border:1px solid var(--border);background:var(--surface);color:var(--text)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;margin-bottom:24px}
+    .card{background:color-mix(in srgb,var(--surface) 94%, transparent);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero-main{padding:28px}.hero-main h2{font-size:clamp(2rem,1.4rem + 3vw,4rem);line-height:1.02;margin:16px 0}.hero-main p{max-width:60ch;color:var(--muted)}
+    .dev{margin-top:14px;font-size:14px;color:var(--muted)}
+    .summary{padding:24px;display:grid;gap:14px}.metric{padding:18px;border-radius:20px;background:var(--surface2);border:1px solid var(--border)}.metric span{display:block;color:var(--muted);font-size:14px}.metric strong{display:block;font-family:var(--font-display);font-size:clamp(1.5rem,1.1rem + 2vw,2.4rem);margin-top:6px}
+    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+    .section{padding:24px}.section h3{font-size:1.6rem;margin-bottom:14px}
+    .switches{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.switch{padding:16px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);text-align:left;font-weight:800}.switch small{display:block;color:var(--muted);font-weight:600;margin-top:3px}.switch.active{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-color:transparent}.switch.active small{color:rgba(255,255,255,.82)}
+    .field-wrap{display:grid;gap:10px;margin-bottom:16px}.label{font-size:14px;font-weight:800}.field,.area{width:100%;padding:16px 18px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);outline:none}.field:focus,.area:focus{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 16%, transparent)}.area{min-height:130px;resize:vertical}
+    .help{font-size:14px;color:var(--muted)}
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.chip{padding:10px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:14px}
+    .results{display:grid;gap:14px}.big{padding:20px;border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 12%, var(--surface)),var(--surface2));border:1px solid color-mix(in srgb,var(--primary) 22%, var(--border))}.big .mins{font-family:var(--font-display);font-size:clamp(2rem,1.4rem + 3vw,4rem);line-height:1;margin:6px 0}.muted{color:var(--muted)}
+    .list{display:grid;gap:10px}.row{display:flex;justify-content:space-between;gap:12px;padding:14px 16px;border-radius:18px;background:var(--surface2);border:1px solid var(--border)}
+    .task-grid{display:grid;gap:12px}.task-row{display:grid;grid-template-columns:1fr 120px 100px;gap:10px;align-items:end}.task-row .field{padding:14px 16px}
+    .lookup{display:grid;gap:10px;margin-top:16px}.lookup-item{padding:14px 16px;border-radius:18px;background:var(--surface2);border:1px solid var(--border)}
+    .lookup-item strong{display:block}.lookup-item span{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+    .warn{color:var(--danger);font-size:14px}
+    .footer{margin-top:24px;text-align:center;color:var(--muted);font-size:14px}
+    @media (max-width:980px){.hero,.layout{grid-template-columns:1fr}} @media (max-width:680px){.app{padding:14px}.switches{grid-template-columns:1fr}.task-row{grid-template-columns:1fr}.hero-main,.summary,.section{padding:18px}.logo{width:140px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">
+          <img src="./base_logo_transparent_background.png.jpg" alt="Unicorn Hospitality Group logo" width="329" height="191" loading="lazy" />
+        </div>
+        <div>
+          <h1>Hotel Cleaning Calculator</h1>
+          <div class="sub">Room number input, instant timing, public areas and extra tasks.</div>
+        </div>
+      </div>
+      <button class="theme" id="themeBtn" aria-label="Switch theme">☾</button>
+    </header>
+
+    <section class="hero">
+      <div class="card hero-main">
+        <h2>Type room numbers and get the cleaning time automatically.</h2>
+        <p>Use one calculator to manage room cleaning time by hotel, add public areas, and include extra tasks in a fast and intuitive workflow.</p>
+        <div class="dev">Developed by João Hilton Ferreira</div>
+      </div>
+      <div class="card summary">
+        <div class="metric"><span>Selected hotel</span><strong id="hotelLabel">Numa Friedrichshain</strong></div>
+        <div class="metric"><span>Total cleaning time</span><strong id="totalLabel">0 min</strong></div>
+        <div class="metric"><span>Estimated hours</span><strong id="hoursLabel">0.00 h</strong></div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="card section">
+        <h3>Rooms</h3>
+        <div class="switches">
+          <button class="switch active" data-hotel="friedrichshain">Numa Friedrichshain<small>Enter room numbers only</small></button>
+          <button class="switch" data-hotel="boxer">Numa Boxer<small>Enter room numbers only</small></button>
+          <button class="switch" data-hotel="sketch">Numa Sketch<small>Enter room numbers only</small></button>
+        </div>
+
+        <div class="field-wrap">
+          <label class="label" for="roomsInput">Enter room numbers to calculate cleaning time</label>
+          <textarea id="roomsInput" class="area" placeholder="Example: 101, 102, 111 or 101 102 111"></textarea>
+          <div class="help">Tip: you can paste a list from any source — commas, spaces, or both work.</div>
+        </div>
+
+        <div class="field-wrap">
+          <label class="label" for="searchRoom">Quick room check</label>
+          <input id="searchRoom" class="field" type="text" placeholder="Type one room number to see category and time" />
+        </div>
+
+        <div class="lookup" id="lookupBox"></div>
+        <div class="chips" id="matchedRooms"></div>
+        <div class="lookup" id="unknownRooms"></div>
+      </div>
+
+      <div class="results">
+        <section class="card section">
+          <h3>Public areas & extras</h3>
+          <div class="task-grid" id="publicTasks"></div>
+          <div style="height:12px"></div>
+          <div class="task-grid">
+            <div class="task-row">
+              <div>
+                <label class="label" for="extraTaskName">Extra task</label>
+                <input id="extraTaskName" class="field" type="text" placeholder="Example: Deep bathroom check" />
+              </div>
+              <div>
+                <label class="label" for="extraTaskMinutes">Minutes</label>
+                <input id="extraTaskMinutes" class="field" type="number" min="0" value="0" />
+              </div>
+              <div>
+                <label class="label" for="extraTaskQty">Quantity</label>
+                <input id="extraTaskQty" class="field" type="number" min="0" value="0" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card section">
+          <h3>Total cleaning time for the day</h3>
+          <div class="big">
+            <div class="muted">Combined total</div>
+            <div class="mins" id="bigTotal">0 min</div>
+            <div class="muted" id="bigHours">0h 0min</div>
+          </div>
+          <div style="height:14px"></div>
+          <div class="list" id="breakdown"></div>
+        </section>
+      </div>
+    </section>
+
+    <div class="footer">Modern calculator in English • Developed by João Hilton Ferreira</div>
+  </div>
+
+  <script>
+    const hotels = {
+      friedrichshain: {
+        name: 'Numa Friedrichshain',
+        rooms: {
+          '6': ['Large - Accessible', 60],
+          '8': ['Medium Room', 40], '101': ['Medium Room', 40], '102': ['Medium Room', 40], '111': ['Medium Room', 40], '114': ['Medium Room', 40], '201': ['Medium Room', 40], '202': ['Medium Room', 40], '211': ['Medium Room', 40], '301': ['Medium Room', 40], '302': ['Medium Room', 40], '311': ['Medium Room', 40], '401': ['Medium Room', 40], '402': ['Medium Room', 40], '411': ['Medium Room', 40],
+          '1': ['Medium Studio', 47], '3': ['Medium Studio', 47], '4': ['Medium Studio', 47], '5': ['Medium Studio', 47], '10': ['Medium Studio', 47], '11': ['Medium Studio', 47], '104': ['Medium Studio', 47], '105': ['Medium Studio', 47], '106': ['Medium Studio', 47], '107': ['Medium Studio', 47], '108': ['Medium Studio', 47], '109': ['Medium Studio', 47], '204': ['Medium Studio', 47], '205': ['Medium Studio', 47], '206': ['Medium Studio', 47], '207': ['Medium Studio', 47], '208': ['Medium Studio', 47], '209': ['Medium Studio', 47], '214': ['Medium Studio', 47], '304': ['Medium Studio', 47], '305': ['Medium Studio', 47], '306': ['Medium Studio', 47], '307': ['Medium Studio', 47], '308': ['Medium Studio', 47], '309': ['Medium Studio', 47], '314': ['Medium Studio', 47], '404': ['Medium Studio', 47], '405': ['Medium Studio', 47], '406': ['Medium Studio', 47], '407': ['Medium Studio', 47], '408': ['Medium Studio', 47], '409': ['Medium Studio', 47], '414': ['Medium Studio', 47],
+          '7': ['Small', 40], '9': ['Small', 40], '12': ['Small', 40], '110': ['Small', 40], '112': ['Small', 40], '113': ['Small', 40], '203': ['Small', 40], '210': ['Small', 40], '212': ['Small', 40], '213': ['Small', 40], '303': ['Small', 40], '310': ['Small', 40], '312': ['Small', 40], '313': ['Small', 40], '403': ['Small', 40], '410': ['Small', 40], '412': ['Small', 40], '413': ['Small', 40],
+          '2': ['Standard', 45], '103': ['Standard', 45]
+        },
+        publicAreas: [
+          ['Daily Public Area Cleaning', 120],
+          ['Coffee Station Refill & Cleaning', 15],
+          ['Corridor Cleaning', 555],
+          ['Staircase Cleaning', 60]
+        ]
+      },
+      boxer: {
+        name: 'Numa Boxer',
+        rooms: {
+          '301': ['Extra Large Studio with Kitchenette, Balcony and Sofa Bed', 55], '401': ['Extra Large Studio with Kitchenette, Balcony and Sofa Bed', 55], '505': ['Extra Large Studio with Kitchenette, Balcony and Sofa Bed', 55],
+          '102': ['Extra Large Studio with Kitchenette - Loft', 52],
+          '216': ['Large Room - Accessible', 45], '315': ['Large Room - Accessible', 45], '415': ['Large Room - Accessible', 45],
+          '201': ['Large Studio with Kitchenette', 52], '202': ['Large Studio with Kitchenette', 52], '317': ['Large Studio with Kitchenette', 52], '219': ['Large Studio with Kitchenette', 52], '302': ['Large Studio with Kitchenette', 52], '303': ['Large Studio with Kitchenette', 52], '304': ['Large Studio with Kitchenette', 52], '318': ['Large Studio with Kitchenette', 52], '402': ['Large Studio with Kitchenette', 52], '403': ['Large Studio with Kitchenette', 52], '404': ['Large Studio with Kitchenette', 52], '417': ['Large Studio with Kitchenette', 52], '418': ['Large Studio with Kitchenette', 52],
+          '501': ['Large Studio with Kitchenette and Balcony', 55], '502': ['Large Studio with Kitchenette and Balcony', 55], '506': ['Large Studio with Kitchenette and Balcony', 55],
+          '111': ['Medium Room', 35], '112': ['Medium Room', 35], '113': ['Medium Room', 35], '114': ['Medium Room', 35], '204': ['Medium Room', 35], '205': ['Medium Room', 35],
+          '101': ['Medium Room - Loft', 45], '103': ['Medium Room - Loft', 45], '104': ['Medium Room - Loft', 45], '105': ['Medium Room - Loft', 45], '106': ['Medium Room - Loft', 45], '107': ['Medium Room - Loft', 45], '108': ['Medium Room - Loft', 45], '115': ['Medium Room - Loft', 45], '118': ['Medium Room - Loft', 45], '119': ['Medium Room - Loft', 45],
+          '116': ['Medium Studio with Kitchenette', 46], '117': ['Medium Studio with Kitchenette', 46], '203': ['Medium Studio with Kitchenette', 46], '206': ['Medium Studio with Kitchenette', 46], '207': ['Medium Studio with Kitchenette', 46], '208': ['Medium Studio with Kitchenette', 46], '211': ['Medium Studio with Kitchenette', 46], '212': ['Medium Studio with Kitchenette', 46], '213': ['Medium Studio with Kitchenette', 46], '214': ['Medium Studio with Kitchenette', 46], '215': ['Medium Studio with Kitchenette', 46], '217': ['Medium Studio with Kitchenette', 46], '305': ['Medium Studio with Kitchenette', 46], '306': ['Medium Studio with Kitchenette', 46], '307': ['Medium Studio with Kitchenette', 46], '310': ['Medium Studio with Kitchenette', 46], '311': ['Medium Studio with Kitchenette', 46], '312': ['Medium Studio with Kitchenette', 46], '313': ['Medium Studio with Kitchenette', 46], '314': ['Medium Studio with Kitchenette', 46], '316': ['Medium Studio with Kitchenette', 46], '218': ['Medium Studio with Kitchenette', 46], '319': ['Medium Studio with Kitchenette', 46], '405': ['Medium Studio with Kitchenette', 46], '406': ['Medium Studio with Kitchenette', 46], '407': ['Medium Studio with Kitchenette', 46], '410': ['Medium Studio with Kitchenette', 46], '411': ['Medium Studio with Kitchenette', 46], '412': ['Medium Studio with Kitchenette', 46], '413': ['Medium Studio with Kitchenette', 46], '414': ['Medium Studio with Kitchenette', 46], '416': ['Medium Studio with Kitchenette', 46], '419': ['Medium Studio with Kitchenette', 46],
+          '109': ['Medium Studio with Kitchenette & Balcony', 48], '110': ['Medium Studio with Kitchenette & Balcony', 48], '209': ['Medium Studio with Kitchenette & Balcony', 48], '210': ['Medium Studio with Kitchenette & Balcony', 48], '308': ['Medium Studio with Kitchenette & Balcony', 48], '309': ['Medium Studio with Kitchenette & Balcony', 48], '408': ['Medium Studio with Kitchenette & Balcony', 48], '409': ['Medium Studio with Kitchenette & Balcony', 48], '503': ['Medium Studio with Kitchenette & Balcony', 48], '504': ['Medium Studio with Kitchenette & Balcony', 48], '507': ['Medium Studio with Kitchenette & Balcony', 48], '508': ['Medium Studio with Kitchenette & Balcony', 48], '509': ['Medium Studio with Kitchenette & Balcony', 48], '510': ['Medium Studio with Kitchenette & Balcony', 48]
+        },
+        publicAreas: [
+          ['Baby Crib Set Up', 15],
+          ['Daily Public Area Cleaning', 120],
+          ['Coffee Station Refill & Cleaning', 15],
+          ['Corridor Cleaning', 555],
+          ['Staircase Cleaning', 60],
+          ['Extra Bedding', 10],
+          ['Member Box', 0],
+          ['Room Refresh', 15]
+        ]
+      },
+      sketch: {
+        name: 'Numa Sketch',
+        rooms: {
+          '101': ['Room', 45], '102': ['Room', 45], '103': ['Room', 45], '104': ['Room', 45], '105': ['Room', 45], '106': ['Room', 45], '107': ['Room', 45], '108': ['Room', 45]
+        },
+        publicAreas: [
+          ['Daily Public Area Cleaning', 120],
+          ['Coffee Station Refill & Cleaning', 15],
+          ['Corridor Cleaning', 60],
+          ['Staircase Cleaning', 60]
+        ]
+      }
+    };
+
+    let currentHotel = 'friedrichshain';
+    const roomsInput = document.getElementById('roomsInput');
+    const searchRoom = document.getElementById('searchRoom');
+    const hotelLabel = document.getElementById('hotelLabel');
+    const totalLabel = document.getElementById('totalLabel');
+    const hoursLabel = document.getElementById('hoursLabel');
+    const bigTotal = document.getElementById('bigTotal');
+    const bigHours = document.getElementById('bigHours');
+    const breakdown = document.getElementById('breakdown');
+    const matchedRooms = document.getElementById('matchedRooms');
+    const unknownRooms = document.getElementById('unknownRooms');
+    const lookupBox = document.getElementById('lookupBox');
+    const publicTasks = document.getElementById('publicTasks');
+    const extraTaskName = document.getElementById('extraTaskName');
+    const extraTaskMinutes = document.getElementById('extraTaskMinutes');
+    const extraTaskQty = document.getElementById('extraTaskQty');
+    const publicState = { friedrichshain:{}, boxer:{}, sketch:{} };
+
+    function renderPublicTasks() {
+      publicTasks.innerHTML = hotels[currentHotel].publicAreas.map(([name, minutes], index) => `
+        <div class="task-row">
+          <div>
+            <label class="label">${name}</label>
+            <input class="field task-qty" type="number" min="0" value="${publicState[currentHotel][index] || 0}" data-index="${index}" />
+          </div>
+          <div>
+            <label class="label">Minutes</label>
+            <input class="field" type="number" value="${minutes}" disabled />
+          </div>
+          <div>
+            <label class="label">Total</label>
+            <input class="field" type="text" value="${(publicState[currentHotel][index] || 0) * minutes} min" disabled />
+          </div>
+        </div>
+      `).join('');
+      document.querySelectorAll('.task-qty').forEach(el => el.addEventListener('input', e => {
+        publicState[currentHotel][e.target.dataset.index] = Math.max(0, Number(e.target.value || 0));
+        renderPublicTasks();
+        calculate();
+      }));
+    }
+
+    function parseRooms(text) {
+      return [...new Set((text.match(/\d+/g) || []).filter(Boolean))];
+    }
+
+    function calculate() {
+      const map = hotels[currentHotel].rooms;
+      const rooms = parseRooms(roomsInput.value);
+      let roomTotal = 0;
+      const found = [];
+      const unknown = [];
+
+      rooms.forEach(room => {
+        if (map[room]) {
+          const [category, mins] = map[room];
+          roomTotal += mins;
+          found.push({ room, category, mins });
+        } else {
+          unknown.push(room);
+        }
+      });
+
+      let publicTotal = 0;
+      hotels[currentHotel].publicAreas.forEach(([name, mins], index) => {
+        publicTotal += (Number(publicState[currentHotel][index] || 0) * mins);
+      });
+
+      const extraName = extraTaskName.value.trim() || 'Extra task';
+      const extraMins = Math.max(0, Number(extraTaskMinutes.value || 0));
+      const extraQty = Math.max(0, Number(extraTaskQty.value || 0));
+      const extraTotal = extraMins * extraQty;
+
+      const total = roomTotal + publicTotal + extraTotal;
+      const hours = Math.floor(total / 60);
+      const mins = total % 60;
+
+      hotelLabel.textContent = hotels[currentHotel].name;
+      totalLabel.textContent = `${total} min`;
+      hoursLabel.textContent = `${(total/60).toFixed(2)} h`;
+      bigTotal.textContent = `${total} min`;
+      bigHours.textContent = `${hours}h ${mins}min`;
+
+      matchedRooms.innerHTML = found.map(item => `<span class="chip">Room ${item.room} • ${item.category} • ${item.mins} min</span>`).join('');
+      unknownRooms.innerHTML = unknown.length ? `<div class="lookup-item"><strong>Rooms not found</strong><span class="warn">${unknown.join(', ')}</span></div>` : '';
+      breakdown.innerHTML = `
+        <div class="row"><span>Valid rooms</span><strong>${found.length}</strong></div>
+        <div class="row"><span>Rooms subtotal</span><strong>${roomTotal} min</strong></div>
+        <div class="row"><span>Public areas subtotal</span><strong>${publicTotal} min</strong></div>
+        <div class="row"><span>${extraName}</span><strong>${extraTotal} min</strong></div>
+      `;
+    }
+
+    function lookupRoom() {
+      const room = (searchRoom.value.match(/\d+/) || [])[0];
+      const data = hotels[currentHotel].rooms[room];
+      if (!room) {
+        lookupBox.innerHTML = '';
+        return;
+      }
+      if (data) {
+        lookupBox.innerHTML = `<div class="lookup-item"><strong>Room ${room}</strong><span>${data[0]} • ${data[1]} min</span></div>`;
+      } else {
+        lookupBox.innerHTML = `<div class="lookup-item"><strong>Room ${room}</strong><span class="warn">Not found in ${hotels[currentHotel].name}</span></div>`;
+      }
+    }
+
+    document.querySelectorAll('.switch').forEach(btn => btn.addEventListener('click', () => {
+      currentHotel = btn.dataset.hotel;
+      document.querySelectorAll('.switch').forEach(b => b.classList.toggle('active', b === btn));
+      hotelLabel.textContent = hotels[currentHotel].name;
+      roomsInput.value = '';
+      searchRoom.value = '';
+      lookupBox.innerHTML = '';
+      matchedRooms.innerHTML = '';
+      unknownRooms.innerHTML = '';
+      renderPublicTasks();
+      calculate();
+    }));
+
+    [roomsInput, extraTaskName, extraTaskMinutes, extraTaskQty].forEach(el => el.addEventListener('input', calculate));
+    searchRoom.addEventListener('input', lookupRoom);
+
+    const themeBtn = document.getElementById('themeBtn');
+    let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtn.textContent = theme === 'dark' ? '☀' : '☾';
+    themeBtn.addEventListener('click', () => { theme = theme === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', theme); themeBtn.textContent = theme === 'dark' ? '☀' : '☾'; });
+
+    renderPublicTasks();
+    calculate();
+  </script>
+</body>
+</html>
